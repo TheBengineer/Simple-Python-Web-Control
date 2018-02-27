@@ -19,13 +19,19 @@ class Game(Thread):
         self.print_board()
 
     def print_board(self):
-        print '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
+        with self.lock:
+            print '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
 
     def check_win(self):
         pass
 
     def check_board_full(self):
-        pass
+        with self.lock:
+            for i in self.board:
+                for j in i:
+                    if j == " ":
+                        return False
+        return True
 
     def check_cell_open(self, x, y):
         with self.lock:  # checks out the lock and returns it when access is done
@@ -39,7 +45,17 @@ class Game(Thread):
                 return False
 
     def play_cell(self, cell, player):
-        pass
+        try:
+            x, y = cell
+        except:
+            raise ValueError("Invalid cell coordinated:", cell)
+        if not 2 >= x >= 0:
+            raise IndexError("Tried to access out of bounds board cell: x{}".format(x))
+        if not 2 >= y >= 0:
+            raise IndexError("Tried to access out of bounds board cell: y{}".format(y))
+        if not player == "X" or player == "O":
+            raise ValueError("Not a valid player:", player)
+        self.board[x][y] = player:
 
     def run(self):
         while self.go:  # Game server mainloop
