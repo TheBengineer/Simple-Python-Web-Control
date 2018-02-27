@@ -1,9 +1,9 @@
 function pageLoad(){
-    get_board()
+    update_board()
 }
 
 
-function get_board(){
+function update_board(){
 var dataObject = { ACTION: "GETBOARD"};
 
 $.ajax({ type: "POST",
