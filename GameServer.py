@@ -43,7 +43,7 @@ class Game(Thread):
         ]
         with self.lock:
             for i in ways_to_win:
-                if sum([1 for j in i if j == player]) >= 1:
+                if sum([1 if self.board[x][y] == player else 0 for x, y in i]) == 3:
                     return True
             return False
 
@@ -81,8 +81,10 @@ class Game(Thread):
             with self.lock:
                 self.board[x][y] = player
         if self.check_win("X"):
+            print "X wins"
             self.reset_board()
         if self.check_win("O"):
+            print "O wins"
             self.reset_board()
         print self.draw_board()
 

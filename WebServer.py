@@ -88,8 +88,10 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     x = cell / 3
                     y = cell % 3
                     self.parent.parent.play_cell([x, y], player)
+                    result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
+                result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
             elif c["ACTION"] == "GETBOARD":
                 board_data = self.parent.parent.board[:]
                 result = json.dumps({"BOARD": board_data}, separators=(',', ':'))
