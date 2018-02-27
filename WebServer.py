@@ -9,7 +9,7 @@ import urllib
 import sys
 from threading import Thread
 
-BASE_DIR = 'Webfiles'
+BASE_DIR = ''
 PORT = 80
 
 
@@ -23,7 +23,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
         """This is a request for a file. The file the user wants is either built for them or loaded from disk and given to them."""
         print self.path
-        if ("?" in self.path and self.path[:self.path.find("?")] == "/") or self.path == "/":
+        if ("?" in self.path and self.path[:self.path.find("?")] == "/html") or self.path == "/html":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
