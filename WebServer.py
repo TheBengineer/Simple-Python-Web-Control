@@ -26,8 +26,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write("Hullo")
-
+            self.wfile.write(self.parent.draw_board())
         else:  # Not a file that's being overridden. Just give them the file from disk.
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -63,8 +62,9 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     player = c["MOVEDATA"]["PLAYER"]
                     x = c["MOVEDATA"]["X"]
                     y = c["MOVEDATA"]["Y"]
+                    self.parent.play_cell([x, y], player)
             if c["MOVE"] == "RESET":
-                pass  # TODO add reset
+                self.parent.reset_board()
         else:
             result = "failed:" + data_string
         self.wfile.write(result)
@@ -141,6 +141,7 @@ class Web(Thread):
         """Start the server."""
         server_address = (self.getlocalip(), PORT)
         server = myServer(server_address, WebHandler, True, self)
+        print server_address
         return server
 
     def shutdown(self):

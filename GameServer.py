@@ -77,6 +77,7 @@ class Game(Thread):
             raise ValueError("Not a valid player:", player)
         with self.lock:
             self.board[x][y] = player
+        print self.draw_board()
 
     def run(self):
         while self.go:  # Game server mainloop
