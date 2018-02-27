@@ -16,14 +16,32 @@ class Game(Thread):
         self.game_start_time = time.time()
         self.game_time = 0
         self.go = True
-        self.print_board()
+        print self.draw_board()
 
-    def print_board(self):
+    def draw_board(self):
         with self.lock:
-            print '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
+            return '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
 
-    def check_win(self):
-        pass
+    def check_win(self, player):
+        ways_to_win = [
+            [[0, 0], [0, 1], [0, 2]],  # Vertical
+            [[1, 0], [1, 1], [1, 2]],
+            [[2, 0], [2, 1], [2, 2]],
+
+            [[0, 0], [1, 1], [2, 2]],
+            [[2, 0], [1, 1], [0, 2]],  # Cross
+
+            [[0, 0], [1, 0], [2, 0]],
+            [[0, 1], [1, 1], [2, 1]],
+            [[0, 2], [1, 2], [2, 2]],  # Horiz
+        ]
+        for i in ways_to_win:
+            if sum([1 for j in i if j == player]) >= 1:
+                return True
+        return False
+
+
+
 
     def check_board_full(self):
         with self.lock:
@@ -57,7 +75,7 @@ class Game(Thread):
             raise ValueError("Not a valid player:", player)
         self.board[x][y] = player:
 
-    def run(self):
-        while self.go:  # Game server mainloop
-            self.game_time = time.time() - self.game_start_time
-            time.sleep(.1)
+        def run(self):
+            while self.go:  # Game server mainloop
+                self.game_time = time.time() - self.game_start_time
+                time.sleep(.1)
