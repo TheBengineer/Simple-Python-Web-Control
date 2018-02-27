@@ -77,10 +77,11 @@ class Game(Thread):
             raise IndexError("Tried to access out of bounds board cell: x{}".format(x))
         if not 2 >= y >= 0:
             raise IndexError("Tried to access out of bounds board cell: y{}".format(y))
-        if not player == "X" or player == "O":
+        if not player == "X" or not player == "O":
             raise ValueError("Not a valid player:", player)
         with self.lock:
-            self.board[x][y] = player
+            if self.check_cell_open(x, y):
+                self.board[x][y] = player
         print self.draw_board()
 
     def run(self):

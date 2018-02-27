@@ -30,18 +30,27 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             # self.wfile.write(self.parent.parent.draw_board())
             # self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
             self.wfile.write("<style>table#board td {width:100px; height:100px; text-align:center; font-size:500%}table#board td:hover {background-color:#AAA;}</style>")
-            self.wfile.write("<form><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
+            self.wfile.write("<form method=\"post\"><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
                              "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\">Player O<br></td></tr></table>"
-                             "<table><tr><td></td></tr></table>"
-                             "<button>RESET</button>")
+                             "<table><tr><td></td></tr></table>")
             self.wfile.write("<table border=\"1\" id=\"board\">")
-            self.wfile.write("<tr><td id='0,0'>{0}</td><td id='1,0'>{1}</td><td id='2,0'>{2}</td></tr>".format(*self.parent.parent.board[0]))
-            self.wfile.write("<tr><td id='0,1'>{0}</td><td id='1,1'>{1}</td><td id='2,1'>{2}</td></tr>".format(*self.parent.parent.board[1]))
-            self.wfile.write("<tr><td id='0,2'>{0}</td><td id='1,2'>{1}</td><td id='2,2'>{2}</td></tr>".format(*self.parent.parent.board[2]))
+            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[0]))
+            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[1]))
+            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[2]))
+            self.wfile.write("</table>")
+            self.wfile.write("<input type='hidden' name='ACTION' value='PLAY'>")
+            self.wfile.write("<table>")
+            for x in range(3):
+                self.wfile.write("<tr>")
+                for y in range(3):
+                    self.wfile.write("<td>")
+                    self.wfile.write("<button type='submit' name='CELL' value='{0}'>{0}".format(y + (x * 3)))
+                    self.wfile.write("</td>")
+                self.wfile.write("</tr>")
             self.wfile.write("</table>")
             self.wfile.write("</form>")
 
-            self.wfile.write("<form><input type=\"hidden\" name=\"ACTION\" value=\"RESET\"><br><button>RESET</button></form>")
+            self.wfile.write("<form method=\"post\"><button name=\"ACTION\" value=\"RESET\">RESET</button></form>")
         else:  # Not a file that's being overridden. Just give them the file from disk.
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -67,17 +76,18 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         print "Dictionary of request data", c
         # Dictionary created
 
-        result = ""
+        result = "asdf"
         if "ACTION" in c:
             if c["ACTION"] == "PLAY":
-                if not "PLAYER" in c["DATA"] or not "X" in c["DATA"] or not "Y" in c["DATA"]:
+                if not "PLAYER" in c or not "CELL" in c:
                     self.log(1, "Data missing from request", c)
                     return ""
                 else:
-                    player = c["DATA"]["PLAYER"]
-                    x = c["DATA"]["X"]
-                    y = c["DATA"]["Y"]
-                    self.parent.play_cell([x, y], player)
+                    player = c["PLAYER"]
+                    cell = int(c["CELL"])
+                    x = cell / 3
+                    y = cell % 3
+                    self.parent.parent.play_cell([x, y], player)
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
             elif c["ACTION"] == "GETBOARD":
