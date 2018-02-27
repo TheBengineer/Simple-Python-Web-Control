@@ -12,11 +12,14 @@ class Game(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.board = [[" "] * 3 for i in range(3)]
-        print self.board
         self.lock = Lock()  # This allows the data to be safe even when accessed by multiple threads.
         self.game_start_time = time.time()
         self.game_time = 0
         self.go = True
+        self.print_board()
+
+    def print_board(self):
+        print '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
 
     def check_win(self):
         pass
