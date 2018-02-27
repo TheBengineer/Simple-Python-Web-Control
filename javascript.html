@@ -1,22 +1,27 @@
 <!DOCTYPE html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Tic Tac Toe</title>
-		<link rel="icon"  type="image/x-icon" href="favicon.ico"/>
-		<link rel="stylesheet" href="styles.css">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Tic Tac Toe</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="styles.css">
 
-	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="Tictactoe.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="Tictactoe.js"></script>
+</head>
+<body onload="pageLoad()">
+<h1>Tic Tac Toe</h1>
 
-	</head>
-	<body onload="pageLoad()">
-		<h1>Tic Tac Toe</h1>
 
-
-		<table id="board">
-			<tr>
-				<td id="CELL0"></td>
-			</tr>
-		</table>
-	</body>
+<table><tr><td><input type="radio" name="PLAYER" value="X" checked>Player X<br></td><td><input type="radio" name="PLAYER" value="O">Player O</td></tr></table>
+<table id="board" border="1">
+    <tr>
+        <td id="CELL0">X</td><td id="CELL1">X</td><td id="CELL2">X</td>
+    </tr><tr>
+        <td id="CELL3">X</td><td id="CELL4">X</td><td id="CELL5">X</td>
+    </tr><tr>
+        <td id="CELL6">X</td><td id="CELL7">X</td><td id="CELL8">X</td>
+    </tr>
+</table>
+</body>
 </html>

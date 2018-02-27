@@ -1,8 +1,9 @@
 table#board td{
-boarder:1;
+border:1;
 height:100px;
 width:100px;
-text-height:500%;
+text-align:center;
+font-size:500%;
 }
 
 table#board td:hover{
