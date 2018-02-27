@@ -80,12 +80,6 @@ class Game(Thread):
         if self.check_cell_open(x, y):
             with self.lock:
                 self.board[x][y] = player
-        if self.check_win("X"):
-            print "X wins"
-            self.reset_board()
-        if self.check_win("O"):
-            print "O wins"
-            self.reset_board()
         print self.draw_board()
 
     def run(self):

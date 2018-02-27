@@ -24,27 +24,24 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         """This is a request for a file. The file the user wants is either built for them or loaded from disk and given to them."""
         print self.path
         if ("?" in self.path and self.path[:self.path.find("?")] == "/html") or self.path == "/html":
+            json_data = json.loads(self.path)
+            print json_data
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             # self.wfile.write(self.parent.parent.draw_board())
             # self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
-            self.wfile.write("<style>table#board td {width:100px; height:100px; text-align:center; font-size:500%}table#board td:hover {background-color:#AAA;}</style>")
+            self.wfile.write("<style></style>")
             self.wfile.write("<form method=\"post\"><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
                              "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\">Player O<br></td></tr></table>"
                              "<table><tr><td></td></tr></table>")
-            self.wfile.write("<table border=\"1\" id=\"board\">")
-            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[0]))
-            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[1]))
-            self.wfile.write("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(*self.parent.parent.board[2]))
-            self.wfile.write("</table>")
             self.wfile.write("<input type='hidden' name='ACTION' value='PLAY'>")
             self.wfile.write("<table>")
             for x in range(3):
                 self.wfile.write("<tr>")
                 for y in range(3):
                     self.wfile.write("<td>")
-                    self.wfile.write("<button type='submit' name='CELL' value='{0}'>{0}".format(y + (x * 3)))
+                    self.wfile.write("<button type='submit' name='CELL' value='{}' style='width:100px; height:100px; font-size:80px'>{}".format(y + (x * 3), self.parent.parent.board[x][y]))
                     self.wfile.write("</td>")
                 self.wfile.write("</tr>")
             self.wfile.write("</table>")
@@ -88,7 +85,17 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     x = cell / 3
                     y = cell % 3
                     self.parent.parent.play_cell([x, y], player)
-                    result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
+                    if self.parent.parent.check_win("X"):
+                        print "X wins"
+                        self.parent.parent.reset_board()
+                        result = "<!DOCTYPE html><html><head><style></style>" \
+                                 "<a href=\"html\"><button >Done</button></a></body></html>"
+                    elif self.parent.parent.check_win("O"):
+                        print "O wins"
+                        self.parent.parent.reset_board()
+                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
+                    else:
+                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
                 result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
