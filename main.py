@@ -28,5 +28,6 @@ if __name__ == "__main__":
             print "Reloading Game Server"
         time.sleep(1)
     else:
-
+        game.go = False
+        web.go = False
         # TODO close server class here
