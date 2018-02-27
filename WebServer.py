@@ -23,18 +23,25 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
         """This is a request for a file. The file the user wants is either built for them or loaded from disk and given to them."""
         print self.path
-        if self.path == "/":
+        if ("?" in self.path and self.path[:self.path.find("?")] == "/") or self.path == "/":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            #self.wfile.write(self.parent.parent.draw_board())
-            self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
-            self.wfile.write("<style>td {width:100px; height:100px; text-align:center; font-size:500%}</style>")
-            self.wfile.write("<table border=\"1\" >")
-            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[0]))
-            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[1]))
-            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[2]))
+            # self.wfile.write(self.parent.parent.draw_board())
+            # self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
+            self.wfile.write("<style>table#board td {width:100px; height:100px; text-align:center; font-size:500%}table#board td:hover {background-color:#AAA;}</style>")
+            self.wfile.write("<form><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
+                             "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\">Player O<br></td></tr></table>"
+                             "<table><tr><td></td></tr></table>"
+                             "<button>RESET</button>")
+            self.wfile.write("<table border=\"1\" id=\"board\">")
+            self.wfile.write("<tr><td id='0,0'>{0}</td><td id='1,0'>{1}</td><td id='2,0'>{2}</td></tr>".format(*self.parent.parent.board[0]))
+            self.wfile.write("<tr><td id='0,1'>{0}</td><td id='1,1'>{1}</td><td id='2,1'>{2}</td></tr>".format(*self.parent.parent.board[1]))
+            self.wfile.write("<tr><td id='0,2'>{0}</td><td id='1,2'>{1}</td><td id='2,2'>{2}</td></tr>".format(*self.parent.parent.board[2]))
             self.wfile.write("</table>")
+            self.wfile.write("</form>")
+
+            self.wfile.write("<form><input type=\"hidden\" name=\"ACTION\" value=\"RESET\"><br><button>RESET</button></form>")
         else:  # Not a file that's being overridden. Just give them the file from disk.
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -74,7 +81,8 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
             elif c["ACTION"] == "GETBOARD":
-                pass
+                board_data = self.parent.parent.board[:]
+                result = json.dumps({"BOARD": board_data}, separators=(',', ':'))
         else:
             result = "failed:" + data_string
         self.wfile.write(result)
