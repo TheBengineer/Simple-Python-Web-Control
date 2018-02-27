@@ -138,7 +138,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         print "Dictionary of request data", c
         # Dictionary created
 
-        result = "asdf"
+        result = " "
         if "ACTION" in c:
             if c["ACTION"] == "PLAY":
                 if not "PLAYER" in c or not "CELL" in c:
