@@ -24,17 +24,37 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         """This is a request for a file. The file the user wants is either built for them or loaded from disk and given to them."""
         print self.path
         if ("?" in self.path and self.path[:self.path.find("?")] == "/html") or self.path == "/html":
-            json_data = json.loads(self.path)
-            print json_data
+            a = self.path.split("?")[1:]
+            print a
+            player = " "
+            if a:
+                c = {}
+                # Data about POST request
+
+                for b in a:
+                    d = b.split("=")
+                    c[d[0]] = d[1]
+
+                for key in c:
+                    c[key] = urllib.unquote_plus(c[key])
+
+                print "Dictionary of request data", c
+                if "PLAYER" in c:
+                    player = c["PLAYER"]
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             # self.wfile.write(self.parent.parent.draw_board())
             # self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
             self.wfile.write("<style></style>")
-            self.wfile.write("<form method=\"post\"><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
-                             "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\">Player O<br></td></tr></table>"
-                             "<table><tr><td></td></tr></table>")
+            if player == "O":
+                self.wfile.write("<form method=\"post\"><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\">Player X<br></td>"
+                                 "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\" checked>Player O<br></td></tr></table>"
+                                 "<table><tr><td></td></tr></table>")
+            else:
+                self.wfile.write("<form method=\"post\"><table><tr><td><input type=\"radio\" name=\"PLAYER\" value=\"X\" checked>Player X<br></td>"
+                                 "<td><input type=\"radio\" name=\"PLAYER\" value=\"O\">Player O<br></td></tr></table>"
+                                 "<table><tr><td></td></tr></table>")
             self.wfile.write("<input type='hidden' name='ACTION' value='PLAY'>")
             self.wfile.write("<table>")
             for x in range(3):
@@ -93,9 +113,9 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     elif self.parent.parent.check_win("O"):
                         print "O wins"
                         self.parent.parent.reset_board()
-                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
+                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html?PLAYER={}\" /></body></html>".format(player)
                     else:
-                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
+                        result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html?PLAYER={}\" /></body></html>".format(player)
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
                 result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
