@@ -26,7 +26,13 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write(self.parent.draw_board())
+            #self.wfile.write(self.parent.parent.draw_board())
+            self.wfile.write("<style>td {width:100px; height:100px; text-align:center; font-size:500%}</style>")
+            self.wfile.write("<table border=\"1\" >")
+            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[0]))
+            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[1]))
+            self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[2]))
+            self.wfile.write("</table>")
         else:  # Not a file that's being overridden. Just give them the file from disk.
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -64,7 +70,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     y = c["MOVEDATA"]["Y"]
                     self.parent.play_cell([x, y], player)
             if c["MOVE"] == "RESET":
-                self.parent.reset_board()
+                self.parent.parent.reset_board()
         else:
             result = "failed:" + data_string
         self.wfile.write(result)

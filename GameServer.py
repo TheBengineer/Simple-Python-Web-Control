@@ -12,6 +12,8 @@ class Game(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.board = [[" "] * 3 for i in range(3)]
+        self.board[1][1] = "X"
+        self.board[0][1] = "O"
         self.lock = Lock()  # This allows the data to be safe even when accessed by multiple threads.
         self.game_start_time = time.time()
         self.game_time = 0
@@ -25,6 +27,8 @@ class Game(Thread):
     def reset_board(self):
         with self.lock:
             self.board = [[" "] * 3 for i in range(3)]
+            self.board[1][1] = "X"
+            self.board[0][1] = "O"
 
     def check_win(self, player):
         ways_to_win = [

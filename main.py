@@ -24,11 +24,13 @@ if __name__ == "__main__":
             break
         if "W" in d.upper():
             print "Reloading Web Server"
+            web.go = False
             reload(WebServer)
             web = WebServer.Web(game)
             web.start()
         if "G" in d.upper():
             print "Reloading Game Server"
+            game.go = False
             reload(GameServer)
             game = GameServer.Game()
             web.parent = game
