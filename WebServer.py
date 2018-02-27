@@ -4,6 +4,7 @@ __author__ = 'Ben'
 import BaseHTTPServer
 import SimpleHTTPServer
 import time
+import json
 import urllib
 import sys
 from threading import Thread
@@ -22,11 +23,12 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
         """This is a request for a file. The file the user wants is either built for them or loaded from disk and given to them."""
         print self.path
-        if self.path == "/test":
+        if self.path == "/":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             #self.wfile.write(self.parent.parent.draw_board())
+            self.wfile.write(" <meta http-equiv=\"refresh\" content=\"2\" />")
             self.wfile.write("<style>td {width:100px; height:100px; text-align:center; font-size:500%}</style>")
             self.wfile.write("<table border=\"1\" >")
             self.wfile.write("<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(*self.parent.parent.board[0]))
@@ -59,18 +61,20 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         # Dictionary created
 
         result = ""
-        if "MOVE" in c:
-            if c["MOVE"] == "PLAY":
-                if not "PLAYER" in c["MOVEDATA"] or not "X" in c["MOVEDATA"] or not "Y" in c["MOVEDATA"]:
+        if "ACTION" in c:
+            if c["ACTION"] == "PLAY":
+                if not "PLAYER" in c["DATA"] or not "X" in c["DATA"] or not "Y" in c["DATA"]:
                     self.log(1, "Data missing from request", c)
                     return ""
                 else:
-                    player = c["MOVEDATA"]["PLAYER"]
-                    x = c["MOVEDATA"]["X"]
-                    y = c["MOVEDATA"]["Y"]
+                    player = c["DATA"]["PLAYER"]
+                    x = c["DATA"]["X"]
+                    y = c["DATA"]["Y"]
                     self.parent.play_cell([x, y], player)
-            if c["MOVE"] == "RESET":
+            elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
+            elif c["ACTION"] == "GETBOARD":
+                pass
         else:
             result = "failed:" + data_string
         self.wfile.write(result)
