@@ -27,8 +27,6 @@ class Game(Thread):
     def reset_board(self):
         with self.lock:
             self.board = [[" "] * 3 for i in range(3)]
-            self.board[1][1] = "X"
-            self.board[0][1] = "O"
 
     def check_win(self, player):
         ways_to_win = [
@@ -77,11 +75,15 @@ class Game(Thread):
             raise IndexError("Tried to access out of bounds board cell: x{}".format(x))
         if not 2 >= y >= 0:
             raise IndexError("Tried to access out of bounds board cell: y{}".format(y))
-        if not player == "X" or not player == "O":
+        if not player == "X" and not player == "O":
             raise ValueError("Not a valid player:", player)
-        with self.lock:
-            if self.check_cell_open(x, y):
+        if self.check_cell_open(x, y):
+            with self.lock:
                 self.board[x][y] = player
+        if self.check_win("X"):
+            self.reset_board()
+        if self.check_win("O"):
+            self.reset_board()
         print self.draw_board()
 
     def run(self):
