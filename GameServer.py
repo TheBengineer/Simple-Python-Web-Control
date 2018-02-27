@@ -22,6 +22,10 @@ class Game(Thread):
         with self.lock:
             return '\n--+---+--\n'.join(["{} | {} | {}".format(*i) for i in self.board])
 
+    def reset_board(self):
+        with self.lock:
+            self.board = [[" "] * 3 for i in range(3)]
+
     def check_win(self, player):
         ways_to_win = [
             [[0, 0], [0, 1], [0, 2]],  # Vertical
@@ -33,15 +37,13 @@ class Game(Thread):
 
             [[0, 0], [1, 0], [2, 0]],
             [[0, 1], [1, 1], [2, 1]],
-            [[0, 2], [1, 2], [2, 2]],  # Horiz
+            [[0, 2], [1, 2], [2, 2]],  # Horizontal
         ]
-        for i in ways_to_win:
-            if sum([1 for j in i if j == player]) >= 1:
-                return True
-        return False
-
-
-
+        with self.lock:
+            for i in ways_to_win:
+                if sum([1 for j in i if j == player]) >= 1:
+                    return True
+            return False
 
     def check_board_full(self):
         with self.lock:
@@ -73,9 +75,10 @@ class Game(Thread):
             raise IndexError("Tried to access out of bounds board cell: y{}".format(y))
         if not player == "X" or player == "O":
             raise ValueError("Not a valid player:", player)
-        self.board[x][y] = player:
+        with self.lock:
+            self.board[x][y] = player
 
-        def run(self):
-            while self.go:  # Game server mainloop
-                self.game_time = time.time() - self.game_start_time
-                time.sleep(.1)
+    def run(self):
+        while self.go:  # Game server mainloop
+            self.game_time = time.time() - self.game_start_time
+            time.sleep(.1)
