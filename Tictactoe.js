@@ -1,5 +1,6 @@
 function pageLoad(){
-    update_board()
+    update_board();
+    refresh();
     var tbl = document.getElementById("board");
     if (tbl != null) {
         for (var i = 0; i < tbl.rows.length; i++) {
@@ -52,4 +53,10 @@ $.ajax({ type: "POST",
         }
     });
     update_board();
+}
+
+
+function refresh() {
+    update_board();
+    setTimeout(refresh, 1000);
 }
