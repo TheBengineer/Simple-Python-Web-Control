@@ -25,7 +25,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         print self.path
         if ("?" in self.path and self.path[:self.path.find("?")] == "/html") or self.path == "/html":
             a = self.path.split("?")[1:]
-            print a
+            # print a
             player = " "
             if a:
                 c = {}
@@ -38,7 +38,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 for key in c:
                     c[key] = urllib.unquote_plus(c[key])
 
-                print "Dictionary of request data", c
+                # print "Dictionary of request data", c
                 if "PLAYER" in c:
                     player = c["PLAYER"]
             self.send_response(200)
@@ -70,7 +70,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.wfile.write("<form method=\"post\"><button name=\"ACTION\" value=\"RESET\">RESET</button></form>")
         if ("?" in self.path and self.path[:self.path.find("?")] == "/asdf") or self.path == "/asdf":
             a = self.path.split("?")[1:]
-            print a
+            # print a
             player = " "
             if a:
                 c = {}
@@ -83,7 +83,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 for key in c:
                     c[key] = urllib.unquote_plus(c[key])
 
-                print "Dictionary of request data", c
+                # print "Dictionary of request data", c
                 if "PLAYER" in c:
                     player = c["PLAYER"]
             self.send_response(200)
@@ -126,7 +126,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         a = data_string.split("&")
         c = {}
         # Data about POST request
-        print data_string
+        # print data_string
 
         for b in a:
             d = b.split("=")
@@ -135,7 +135,7 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         for key in c:
             c[key] = urllib.unquote_plus(c[key])
 
-        print "Dictionary of request data", c
+        # print "Dictionary of request data", c
         # Dictionary created
 
         result = " "
@@ -246,7 +246,7 @@ class Web(Thread):
         """Start the server."""
         server_address = (self.getlocalip(), PORT)
         server = myServer(server_address, WebHandler, True, self)
-        print server_address
+        print "Hosting at:", server_address
         return server
 
     def shutdown(self):
