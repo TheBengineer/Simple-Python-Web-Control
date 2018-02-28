@@ -80,6 +80,7 @@ class Game(Thread):
         if self.check_cell_open(x, y):
             with self.lock:
                 self.board[x][y] = player
+        print
         print self.draw_board()
 
     def run(self):
