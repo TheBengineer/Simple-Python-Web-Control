@@ -164,6 +164,9 @@ class WebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             elif c["ACTION"] == "RESET":
                 self.parent.parent.reset_board()
                 result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /html\" /></body></html>"
+            elif c["ACTION"] == "RESETJS":
+                self.parent.parent.reset_board()
+                result = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; /javascript.html\" /></body></html>"
             elif c["ACTION"] == "GETBOARD":
                 board_data = self.parent.parent.board[:]
                 result = json.dumps({"BOARD": board_data}, separators=(',', ':'))

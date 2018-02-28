@@ -61,7 +61,7 @@ $.ajax({ type: "POST",
                     document.getElementById(cellID).innerHTML = board_data[i][j]
                 }
             }
-            update_board()
         }
     });
+    update_board()
 }
